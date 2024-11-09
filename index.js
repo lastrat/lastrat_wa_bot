@@ -64,6 +64,10 @@ const getText = (message) => {
   }
 };
 
+// ********************************************************************
+// -------- Function Check if message comes from a  Group -------------
+// ********************************************************************
+
 const isGroup = (key)=>{
   if(key.remoteJid.includes('@g.us')){
     return true;
@@ -72,6 +76,10 @@ const isGroup = (key)=>{
     return false;
   }
 }
+
+// ********************************************************************
+// -------Function Check if message is coming from APP Admin ---------
+// ********************************************************************
 
 var admin = ['237671624397'];
 function adminCheck(key){
@@ -83,6 +91,11 @@ function adminCheck(key){
         });
         return state;
   }
+
+
+// ********************************************************************
+// -------Function Check if message is coming from Group Admin ------
+// ********************************************************************
 
 const isAdmin = async(key)=>{
   const group = await sock.groupMetadata(key.remoteJid);
@@ -105,19 +118,9 @@ const sendMessage = async (jid,content, ...args) =>{
   }
 };
 
-const handleMirror = async (msg)=>{
-const {key,message} = msg;
-const text = getText(message);
-
-const prefix = "!mirror";
-
-if(!text.startsWith(prefix)) return;
-
-  const reply = text.slice(prefix.length);
-
-  sendMessage(key.remoteJid, {text: reply}, {quoted : msg});
-};
-
+// ********************************************************************
+// -------Convert String array to number array -------------
+// ********************************************************************
 function stringToNumberArray(inputString,suffix) {
   // Split the input string by comma to obtain an array of strings
   var numbersStringArray = inputString.split(',');
@@ -126,6 +129,12 @@ function stringToNumberArray(inputString,suffix) {
       });
 
 }
+
+
+// ********************************************************************
+// ---------------------- Functionalities Start ----------------------
+// ********************************************************************
+
 
 const handleAll = async (msg) => {
   try{
@@ -166,59 +175,84 @@ const handleAll = async (msg) => {
       sendMessage(key.remoteJid,{text: '*Enter correctly the format*\n example: #add 237690124021,241690237310' }, {quoted: msg});
     }
   }
-  //Menu button
-  else if(text.toLowerCase()=="#menu"){
-    sendMessage(key.remoteJid,{text:
-      ' ( ͡❛ ͜ʖ ͡❛)\n\nOhayoo ' + pushName + ' senpai \n\nLa pignouf >>>> Fap Fap.\n\nJe suis *Lastrat Satoru*, un robot developer par lastrategie\n\nMon prefixes est le #.\nVoici la liste de mes commandes.\n' + 
-      '|--------- ✤ GENERAL ✤ --------\n'+
-      '|▻ 🔰#ping\n'+
-      '|--------- ✤ GROUP ✤ --------\n'+
-      '|▻ 🔰#add <<phone number without +>>\n'+
-      '|▻ 🔰#kick <<phone number without +>>\n'+
-      '|▻ 🔰#promote <<phone number without +>>\n'+
-      '|▻ 🔰#demote <<phone number without +>>\n'+
-      '|▻ 🔰#setdesc <<group description>>\n'+
-      '|▻ 🔰#setppgc <<send an image>>\n'+
-      '|▻ 🔰#setsub <<Group name>>\n'+
-      '|▻ 🔰#gpmsg <<on or off>>\n'+
-      '|▻ 🔰#gpsetting <<on or off>>\n'+
-      '|▻ 🔰#outgp\n'+
-      '|▻ 🔰#gplink\n'+
-      '|▻ 🔰#gprevoke\n'+
-      '|▻ 🔰#join <<group link>>\n'+
-      '|▻ 🔰#gpinfo <<group link>>\n'+
-      '|▻ 🔰#all\n'+
-      '|--------- ✤ OTHER ✤ --------\n'+
-      '|▻ 🔰#meme\n'+
-      '|▻ 🔰#sticker <<send an image>>\n' +
-      '|▻ 🔰#animewall <<anime name>>\n'+
-      '|▻ 🔰#ask <<your question>>\n'+
-      '|▻ 🔰#vcf\n'+
-      '|--------- ✤ DOWNLOAD ✤ --------\n'+
-      '|▻ 🔰#ytmp3 <<youtube video link>>\n'+
-      '|▻ 🔰#ytmp4 <<youtube video link>>\n'+
-      '|▻ 🔰#fb <<Facebook video link>>\n'+
-      '|▻ 🔰#tk <<tiktok video link>>\n'+
-      '|▻ 🔰#ytsearch <<keywords>>\n'},
-        {quoted: msg});
+  
+// ********************************************************************
+// ----------------------- Bot Menu -----------------------------------
+// ********************************************************************
+  else if (text.toLowerCase() == "#menu") {
+    sendMessage(key.remoteJid, { text: 
+      '╔═════════════════════════════════════════════════╗\n' +
+      '    🌸 𝑂𝒽𝒶𝓎𝑜𝑜, ' + pushName + ' -𝓈𝑒𝓃𝓅𝒶𝒾 🌸\n' +
+      '       ( ͡❛ ͜ʖ ͡❛) 𝒲𝑒𝓁𝒸𝑜𝓂𝑒!\n' +
+      '╚═════════════════════════════════════════════════╝\n\n' +
+      '✨ I am *Lastrat Satoru*, your AI companion ✨\n' +
+      '✦ My prefix is # ✦\n\n' +
+
+      '━━━━━ ❰ ✤ GENERAL ✤ ❱ ━━━━━\n' +
+      '🔹 #ping  ➔  Check my response time\n\n' +
+
+      '━━━━━ ❰ ✤ GROUP ✤ ❱ ━━━━━\n' +
+      '🔹 #add <<phone number>>\n' +
+      '🔹 #kick <<phone number>>\n' +
+      '🔹 #promote <<phone number>>\n' +
+      '🔹 #demote <<phone number>>\n' +
+      '🔹 #setdesc <<group description>>\n' +
+      '🔹 #setppgc <<send an image>>\n' +
+      '🔹 #setsub <<group name>>\n' +
+      '🔹 #gpmsg <<on/off>>\n' +
+      '🔹 #gpsetting <<on/off>>\n' +
+      '🔹 #outgp ➔ Leave the group\n' +
+      '🔹 #gplink ➔ Get group link\n' +
+      '🔹 #gprevoke ➔ Revoke group link\n' +
+      '🔹 #join <<group link>>\n' +
+      '🔹 #gpinfo <<group link>>\n' +
+      '🔹 #all ➔ Tag everyone\n\n' +
+
+      '━━━━━ ❰ ✤ OTHER ✤ ❱ ━━━━━\n' +
+      '🔹 #meme ➔ Get a meme\n' +
+      '🔹 #sticker <<send an image>>\n' +
+      '🔹 #animewall <<anime name>>\n' +
+      '🔹 #ask <<your question>>\n' +
+      '🔹 #vcf ➔ Get a virtual contact file\n\n' +
+
+      '━━━━━ ❰ ✤ DOWNLOAD ✤ ❱ ━━━━━\n' +
+      '🔹 #ytmp3 <<YouTube video link>>\n' +
+      '🔹 #ytmp4 <<YouTube video link>>\n' +
+      '🔹 #fb <<Facebook video link>>\n' +
+      '🔹 #tk <<TikTok video link>>\n' +
+      '🔹 #ytsearch <<keywords>> ➔ Search YouTube\n\n' +
+
+      '╚════════════════════════════╝\n' +
+      '   ✨ Enjoy the experience! ✨'},
+      { quoted: msg });
   }
+
+
+// ********************************************************************
+// --------------------Remove a member of a group ---------------------
+// ********************************************************************
   else if(text.toLowerCase().startsWith('#kick')){
     if(!isGroup(key)){
       sendMessage(key.remoteJid,{text: '*Function only work inside group*' }, {quoted: msg});
       return "";
     }
+
+    //check if group admin
     var test = await isAdmin(key);
     if(test==0){
       sendMessage(key.remoteJid,{text: '*Only Group Admin can use this functionality Bakaa*' }, {quoted: msg});
       return "";
     }
+    //check conformity
     if(text.toLowerCase()=='#kick'){await sock.sendMessage(key.remoteJid,
       {text: 'Please try like this ==> #kick 237671624397'},{quoted: msg});
     return;
     }
+
     const prefix = "#kick";
     const value = text.slice(prefix.length);
     var test2 = adminCheck(value.trim());
+    //check if wanna remove bot creator
     if(test2==1){
       sendMessage(key.remoteJid,{text: "*Bakaa you can't remove bot creator*\n*Yowaimo*" }, {quoted: msg});
       return "";
@@ -234,6 +268,10 @@ const handleAll = async (msg) => {
       sendMessage(key.remoteJid,{text: '*Enter correctly the format*\n example: #kick 237690124021,241690237310' }, {quoted: msg});
     }
   }
+
+  // ********************************************************************
+  // -------Promote a member of a group to Admin ------------------------
+  // ********************************************************************
   else if(text.toLowerCase().startsWith('#promote')){
     if(!isGroup(key)){
       sendMessage(key.remoteJid,{text: '*Function only work inside group*' }, {quoted: msg});
@@ -261,6 +299,10 @@ const handleAll = async (msg) => {
       sendMessage(key.remoteJid,{text: '*PLEASE THE BOT MUST FIRST OF ALL BE ADMIN*\n*AND*\n*Enter correctly the format*\nexample: #promote 237690124021,241690237310' }, {quoted: msg});
     }
   }
+
+  // ********************************************************************
+  // ------------- Demote a member of a group from Admin ---------------S- 
+  // ********************************************************************
   else if(text.toLowerCase().startsWith('#demote')){
     if(!isGroup(key)){
       sendMessage(key.remoteJid,{text: '*Function only work inside group*' }, {quoted: msg});
@@ -288,6 +330,10 @@ const handleAll = async (msg) => {
       sendMessage(key.remoteJid,{text: '*Enter correctly the format*\n example: #demote 237690124021,241690237310'}, {quoted: msg});
     }
   }
+
+  // ********************************************************************
+  // ------------------ Change Group description ------------------------
+  // ********************************************************************
   else if(text.toLowerCase().startsWith('#setdesc')){
     if(!isGroup(key)){
       sendMessage(key.remoteJid,{text: '*Function only work inside group*' }, {quoted: msg});
@@ -309,6 +355,10 @@ const handleAll = async (msg) => {
       sendMessage(key.remoteJid,{text: '*Enter correctly the format*\n example: #setdesc <<group description here>>'}, {quoted: msg});
     }
   }
+
+  // ********************************************************************
+  // ---------------------- Change Group Name ---------------------------
+  // ********************************************************************
   else if(text.toLowerCase().startsWith('#setsub')){
     if(!isGroup(key)){
       sendMessage(key.remoteJid,{text: '*Function only work inside group*' }, {quoted: msg});
@@ -330,6 +380,10 @@ const handleAll = async (msg) => {
       sendMessage(key.remoteJid,{text: '*Enter correctly the format*\n example: #setsub <<group subject here>>'}, {quoted: msg});
     }
   }
+
+  // ********************************************************************
+  // -------Promote a member of a group to Admin ------------------------
+  // ********************************************************************
   else if(text.toLowerCase().startsWith('#gpmsg')){
     if(!isGroup(key)){
       sendMessage(key.remoteJid,{text: '*Function only work inside group*' }, {quoted: msg});
@@ -369,6 +423,10 @@ const handleAll = async (msg) => {
       sendMessage(key.remoteJid,{text: '*on or off the group message*'}, {quoted: msg});
     }
   }
+
+  // ********************************************************************
+  // -----Change group setting allow change Desc|Profile|Groupe Name ----
+  // ********************************************************************
   else if(text.toLowerCase().startsWith('#gpsetting')){
     if(!isGroup(key)){
       sendMessage(key.remoteJid,{text: '*Function only work inside group*' }, {quoted: msg});
@@ -405,6 +463,9 @@ const handleAll = async (msg) => {
       sendMessage(key.remoteJid,{text: '*on or off the setting*'}, {quoted: msg});
     }
   }
+  // ********************************************************************
+  // ------------------------ get Group Link ------------------------
+  // ********************************************************************
   else if(text.toLowerCase()=="#gplink"){
     if(!isGroup(key)){
       sendMessage(key.remoteJid,{text: '*Function only work inside group*' }, {quoted: msg});
@@ -418,6 +479,10 @@ const handleAll = async (msg) => {
     const code = await sock.groupInviteCode(key.remoteJid);
     sendMessage(key.remoteJid,{text: 'https://chat.whatsapp.com/'+code}, {quoted: msg});
   }
+
+  // ********************************************************************
+  // -------Revoke Whatsapp Group Link ------------------------
+  // ********************************************************************
   else if(text.toLowerCase()=="#gprevoke"){
     if(!isGroup(key)){
       sendMessage(key.remoteJid,{text: '*Function only work inside group*' }, {quoted: msg});
@@ -430,6 +495,10 @@ const handleAll = async (msg) => {
     }
     const code = await sock.groupRevokeInvite(key.remoteJid);
   }
+
+  // ********************************************************************
+  // ------- Add Whatsapp Bot to a Whatsapp Group -----------------------
+  // ********************************************************************
   else if(text.toLowerCase().startsWith('#join')){
     if(!isGroup(key)){
       sendMessage(key.remoteJid,{text: '*Function only work inside group*' }, {quoted: msg});
@@ -455,6 +524,9 @@ const handleAll = async (msg) => {
       sendMessage(key.remoteJid,{text:'*use #join <<group invitation link>>*'}, {quoted: msg});
     }
   }
+  // ********************************************************************
+  // ---------- GET WHATSAPP GROUP INFORMATIONS ------------------------
+  // ********************************************************************
   else if(text.toLowerCase().startsWith('#gpinfo')){
     if(!isGroup(key)){
       sendMessage(key.remoteJid,{text: '*Function only work inside group*' }, {quoted: msg});
@@ -483,6 +555,10 @@ const handleAll = async (msg) => {
       sendMessage(key.remoteJid,{text:'*use #gpinfo <<group invitation link>>*'}, {quoted: msg});
     }
   }
+
+  // ********************************************************************
+  // -------------- SET IMAGE PROFILE OF A GROUP ------------------------
+  // ********************************************************************
   else if(messageType === 'imageMessage' && message.imageMessage.caption=='#setppgc'){
     if(!isGroup(key)){
       sendMessage(key.remoteJid,{text: '*Function only work inside group*' }, {quoted: msg});
@@ -518,6 +594,10 @@ const handleAll = async (msg) => {
       sendMessage(key.remoteJid,{text:'*Something when wrong:* ' + error}, {quoted: msg});
     }
   }
+
+  // ********************************************************************
+  // --------------- GET RANDOM ANIME WALL PAPER ------------------------
+  // ********************************************************************
   //Meme Generation function
   else if(text.toLowerCase()=='#animewall'){
       const anime = await wallpaper.random();
@@ -534,6 +614,10 @@ const handleAll = async (msg) => {
         }
       });
   }
+
+  // ********************************************************************
+  // -------------- GET SPECIFIC ANIME WALL PAPER------------------------
+  // ********************************************************************
   else if(text.toLowerCase().startsWith('#animewall')){
     var prefix = "#animewall";
     const value = text.slice(prefix.length);
@@ -614,6 +698,10 @@ const handleAll = async (msg) => {
   })();
   }
 */
+
+  // ********************************************************************
+  // -------------------- ASK QUESTIONS TO AN AI ------------------------
+  // ********************************************************************
   else if(text.toLowerCase().startsWith('#ask')){
     prefix = '#ask';
     const value = text.slice(prefix.length);
@@ -653,6 +741,10 @@ const handleAll = async (msg) => {
       }
     });
   }*/
+
+  // ********************************************************************
+  // --------------------- DOWNLOAD TIKTOK VIDEO ------------------------
+  // ********************************************************************
   else if(text.toLowerCase().startsWith('#tk')){
     if(text.toLowerCase()=='#tk'){
       await sock.sendMessage(key.remoteJid,
@@ -688,6 +780,10 @@ const handleAll = async (msg) => {
       console.log(error);
     }
   }
+
+  // ********************************************************************
+  // ------------------ CONVERT IMAGE TO STICKER ------------------------
+  // ********************************************************************
   else if(messageType === 'imageMessage' && message.imageMessage.caption=='#sticker'){
     try{
       const buffer = await downloadMediaMessage(
@@ -736,6 +832,10 @@ const handleAll = async (msg) => {
         {quoted:msg});
     }
   }
+
+  // ********************************************************************
+  // ---------------------- GENERATE RANDOM MEME ------------------------
+  // ********************************************************************
   else if(text.toLowerCase()=='#meme'){
     try{
     memes.random().then(async(meme) => {
@@ -772,6 +872,10 @@ const handleAll = async (msg) => {
       );
     }
   }
+
+  // ********************************************************************
+  // -------------------------- YOUTUBE RESEARCH ------------------------
+  // ********************************************************************
   else if(text.toLowerCase().startsWith('#ytsearch')){
     if(text.toLowerCase()=='#ytsearch'){
       await sock.sendMessage(key.remoteJid,
@@ -793,13 +897,13 @@ const handleAll = async (msg) => {
         await sock.sendMessage(
           key.remoteJid, 
               {
-               text: '----------------------------------------------------------\n' + 
-               'Title:' + results[i].title + 
-               '\nChannel Title: ' + results[i].channelTitle + 
-               '\nLink: ' + results[i].link + 
-               '\nDescription: ' + results[i].description + 
-               '\n----------------------------------------------------------------'
-              },
+                  text: '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n' +
+                        '📜 *Title:* ' + results[i].title + '\n' +
+                        '📺 *Channel:* ' + results[i].channelTitle + '\n' +
+                        '🔗 *Link:* ' + results[i].link + '\n\n' +
+                        '📝 *Description:*\n' + results[i].description + '\n' +
+                        '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'
+              }, 
               {quoted:msg}
           );
         }
@@ -809,6 +913,10 @@ const handleAll = async (msg) => {
 
     });
   }
+
+  // ********************************************************************
+  // -------TEST SPEED OF BOT------------------------
+  // ********************************************************************
   else if(text.toLowerCase()=='#ping'){
     var hosts = ['google.com', 'yahoo.com'];
 
@@ -818,6 +926,10 @@ for(let host of hosts){
     await sock.sendMessage(key.remoteJid,{text: 'Alive: '+ res.alive + '\nPacketLoss: '+ res.packetLoss }, {quoted: msg});
 }
   }
+
+  // ********************************************************************
+  // ------- EXPORT VCF CONTACT FILE OF A GROUP ¨------------------------
+  // ********************************************************************
   else if(text.toLowerCase() == '#vcf'){
     if(!isGroup(key)){
       sendMessage(key.remoteJid,{text: '*Function only work inside group*' }, {quoted: msg});
@@ -839,7 +951,7 @@ for(let host of hosts){
       const ws = XLSX.utils.aoa_to_sheet(dataArray);
       const wb = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, ws, 'Sheet 1');
-      XLSX.writeFile(wb, './vcf/' + group.subject+'.xlsx');
+      XLSX.writeFile(wb, './vcf/' + 'test'+'.xlsx');
 
       console.log('Data written to output.xlsx');
 
@@ -852,14 +964,17 @@ for(let host of hosts){
       });
 
       // Step 3: Save the vCards to a VCF file
-      fs.writeFileSync('./vcf/'+ group.subject+'.vcf', vCards.join('\n'));
+      fs.writeFileSync('./vcf/'+ 'test'+'.vcf', vCards.join('\n'));
 
       console.log('Conversion completed successfully. Output saved to output.vcf');
-      sendMessage(key.remoteJid,{document:{url:"./vcf/"+group.subject+".vcf"},mimetype:vCard.mimeType,fileName:group.subject+".vcf"},{quoted: msg});
+      sendMessage(key.remoteJid,{document:{url:"./vcf/"+'test'+".vcf"},mimetype:vCard.mimeType,fileName:'test'+".vcf"},{quoted: msg});
     }
   }
   else if(!text.toLowerCase().includes('#all')) return;
 
+  // ********************************************************************
+  // ------- TAG ALL MEMBERS OF A WHATSAPP GROUP ------------------------
+  // ********************************************************************
   else if(text.toLowerCase().startsWith('#all')){
     if(!isGroup(key)){
       sendMessage(key.remoteJid,{text: '*Function only work inside group*' }, {quoted: msg});
@@ -905,6 +1020,8 @@ for(let host of hosts){
 
 }
 
+
+//Update Whatsapp connection
 sock.ev.on("connection.update",async (update)=>{
   try{
   const {connection,lastDisconnect,qr}=update || {};
@@ -930,6 +1047,8 @@ sock.ev.on("connection.update",async (update)=>{
  // console.log(messageInfo);
 });*/
 
+
+// When ever a message is send via whatsapp or you send a message
 sock.ev.on("messages.upsert",async(messageInfoUpsert)=>{
   try{
   messageInfoUpsert.messages.forEach((msg)=>{
@@ -950,9 +1069,9 @@ sock.ev.on("messages.upsert",async(messageInfoUpsert)=>{
   //const gg = '120363198766572654@g.us' //group 2
 
 //handleMirror(messageInfoUpsert);
-}catch(err){
-  console.log(err);
-}
+      }catch(err){
+        console.log(err);
+      }
 });
 
 
