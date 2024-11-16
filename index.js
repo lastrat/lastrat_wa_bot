@@ -623,7 +623,7 @@ const handleAll = async (msg) => {
     const value = text.slice(prefix.length);
     var i=0;
     try{
-      const anime = await wallpaper.search({ title: value }, AnimeSource.Wallpapers);
+      const anime = await wallpaper.search({ title: value }, AnimeSource.WallHaven);
       for(i=0;i<5;i++){
     //anime.forEach(async(manga)=>{
       const buttonMessage = {
@@ -791,35 +791,32 @@ const handleAll = async (msg) => {
         'buffer',
         { },
         {
-                // pass this so that baileys can request a reupload of media
-                // that has been deleted
-                reuploadRequest: sock.updateMediaMessage
+            // pass this so that baileys can request a reupload of media
+            // that has been deleted
+            reuploadRequest: sock.updateMediaMessage
         }
     );
-    await writeFile('./media/sticker.webp', buffer);
-    let originalImage = './media/sticker.png';
-    let outputImage= './media/finale.png'
-    /*(originalImage).extract({ width: 250, height: 250, left: 0, top: 0 }).toFile(outputImage)
-    .then(function(new_file_info) {
-        console.log("Image cropped and saved");
-    });*/
-    const sticker = new Sticker(buffer, {
-    pack: 'Ryouki tenkai', // The pack name
-    author: 'Lastrat Satoru', // The author name
-    type: StickerTypes.DEFAULT , // The sticker type
-    categories: ['🤩', '🎉'], // The sticker category
-    id: 'gkio0', // The sticker id
-    quality: 50, // The quality of the output file
-    background: '#000000' // The sticker background color (only for full stickers)
-      });
-    const buffer2 = await sticker.toBuffer();
-    //await sticker.toFile('./sticker.webp');
-    await writeFile('./sticker.webp', buffer2);
+    if (!buffer) {
+      throw new Error("Failed to download media message. Buffer is empty.");
+  }
+
+  // await writeFile('./media/sticker.webp', buffer);
+  const stickerFile = fs.readFileSync("media/sticker.webp"); // media is an Express.Multer.File
+  const stickerBuffer = Buffer.from(stickerFile);
+
+  const sticker = new Sticker(stickerBuffer, {
+      pack: 'Ryouki tenkai', // The pack name
+      author: 'Lastrat Satoru', // The author name
+      type: StickerTypes.CROPPED, // The sticker type
+  });
+  const buffer2 = await sticker.toBuffer();
+
+  console.log("Sticker generated successfully!");
 
     await sock.sendMessage(
       key.remoteJid, 
       {
-        sticker: {url:'./sticker.webp'}
+        sticker:buffer2,
       },
       {quoted:msg});
 
